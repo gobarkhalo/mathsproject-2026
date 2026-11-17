@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set Theory & Venn Diagram Simulator | CBSE Class 11 Maths</title>
+<style>
+:root{--bd:#12261f;--pn:#183229;--ln:#2b4a3f;--ch:#f2efe4;--mu:#a9bdb2;--y:#f5d76e;--b:#7fc8f8;--p:#f4a6b8;--g:#8fe0a8;--r:#ff8f8f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bd);color:var(--ch);font:15px/1.5 "Trebuchet MS",Verdana,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0;font-weight:700}
+header{padding:22px 20px 18px;border-bottom:2px dashed var(--ln);max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end}
+header h1{font-size:clamp(24px,4vw,36px);color:var(--y)}
+header p{margin:4px 0 0;color:var(--mu);font-size:13px}
+.dev{font-size:13px;color:var(--mu);text-align:right}.dev b{color:var(--ch);font-size:15px}
+main{max-width:1180px;margin:0 auto;padding:18px 20px 40px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:18px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:16px;margin-bottom:18px}
+.card h2{font-size:18px;margin-bottom:10px;color:var(--ch)}
+.card h3{font-size:15px;margin-bottom:8px}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
+label b{font-weight:700}
+input{width:100%;background:var(--bd);border:1px solid var(--ln);color:var(--ch);border-radius:6px;padding:9px 11px;font:15px ui-monospace,Consolas,monospace}
+input:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--ln);background:var(--bd);color:var(--ch);padding:7px 11px;font-size:13px}
+button:hover{border-color:var(--y)}
+button.on{background:var(--y);color:#1b2a22;border-color:var(--y);font-weight:700}
+.ops{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.ops button{text-align:left;padding:9px 11px}
+.ops b{display:block;font:700 15px ui-monospace,Consolas,monospace}
+.ops span{font-size:12px;opacity:.85}
+.warn{margin-top:10px;font-size:13px;color:var(--p);min-height:18px}
+svg{width:100%;height:auto;display:block;background:var(--bd);border-radius:8px;border:1px solid var(--ln)}
+.reg{fill:transparent;transition:fill .35s}.reg.on{fill:rgba(245,215,110,.38)}
+.res{font:700 17px ui-monospace,Consolas,monospace;color:var(--g);word-break:break-word;background:var(--bd);padding:10px 12px;border-radius:6px;border:1px solid var(--ln)}
+.exp{font-size:14px;color:var(--ch);margin-top:10px;border-left:3px solid var(--y);padding-left:10px}
+.mu{color:var(--mu);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:3px 10px;border-radius:99px;border:1px solid var(--ln);font-size:13px;color:var(--mu)}
+.chip.t{color:#12261f;background:var(--g);border-color:var(--g);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px 5px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}
+th{color:var(--mu);font-weight:600}
+td.m{font-family:ui-monospace,Consolas,monospace}
+.ok{color:var(--g);font-weight:700}.no{color:var(--r);font-weight:700}
+details{border-top:1px solid var(--ln);padding:8px 0}summary{cursor:pointer;font-weight:700}
+details p{margin:6px 0 0;color:var(--mu);font-size:14px}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:0 20px 30px}
+.demo{border-color:var(--y)}
+body{padding-bottom:190px}
+button{touch-action:manipulation}
+body.big{zoom:1.3}
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:9;background:#0d1d17;border-top:2px solid var(--y);padding:8px 14px;display:flex;flex-direction:column;gap:8px}
+#dock button{min-height:52px;min-width:60px;font-size:17px}
+#dockOps{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+#dockOps button{font:700 17px ui-monospace,Consolas,monospace;white-space:nowrap}
+#demoOn{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#demoOn[hidden]{display:none}
+#demoTxt{flex:1 1 320px;margin:0;font-size:18px;line-height:1.4}
+#dockTools{display:flex;gap:8px;flex-wrap:wrap}
+@media print{#dock{display:none}body{padding-bottom:0}}
+@media print{.np{display:none!important}main{display:block}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Set Theory &amp; Venn Diagram Simulator</h1>
+    <p>CBSE Class 11 Mathematics, NCERT Chapter 1: Sets. Type your own sets and the diagram updates as you type.</p>
+  </div>
+  <div class="dev">Maths Practical Project<br>Made by <b>Piyush Garai</b> (Class XI)</div>
+</header>
+
+<main>
+<section>
+  <div class="card demo np">
+    <h2>Presentation mode</h2>
+    <div id="demoOff"><p class="mu" style="margin:0 0 8px">Walks through the demo step by step with talking points. Use the Next and Back buttons or the arrow keys.</p><button class="on" id="demoStart">Start guided demo</button></div>
+  </div>
+  <div class="card">
+    <h2>1. Enter your sets</h2>
+    <p class="mu" style="margin:0">Separate elements with commas. Numbers or words both work.</p>
+    <label for="iU"><b>Universal set U</b></label><input id="iU" autocomplete="off" spellcheck="false">
+    <label for="iA"><b style="color:var(--b)">Set A</b></label><input id="iA" autocomplete="off" spellcheck="false">
+    <label for="iB"><b style="color:var(--p)">Set B</b></label><input id="iB" autocomplete="off" spellcheck="false">
+    <div class="warn" id="warn" role="status"></div>
+    <div class="row np" id="presets"></div>
+  </div>
+  <div class="card">
+    <h2>2. Choose an operation</h2>
+    <div class="ops" id="ops"></div>
+  </div>
+  <div class="card np">
+    <h2>Viva questions with answers</h2>
+    <p class="mu" style="margin:0 0 6px">Tap a question to see the answer.</p>
+    <details><summary>What does this project do?</summary><p>You type three sets: U, A and B. The website draws them as a Venn diagram. When you tap an operation, the answer part turns yellow and the answer is written below. It also checks the laws on your own sets.</p></details>
+    <details><summary>What is a set?</summary><p>A set is a well-defined collection of objects. "Well-defined" means we can say clearly whether something is in it or not. Example: A = {2, 4, 6}. We write 4 ∈ A, and 5 ∉ A.</p></details>
+    <details><summary>What is the universal set U?</summary><p>The big set that contains all the elements we are talking about. A and B are always subsets of U. In the diagram it is the big rectangle.</p></details>
+    <details><summary>What is a subset?</summary><p>A ⊆ B means every element of A is also in B. Example: {2, 4} ⊆ {1, 2, 3, 4}. Use the "B inside A" preset to see it.</p></details>
+    <details><summary>Union and intersection: what is the difference?</summary><p>Union A ∪ B: elements in A or B or both. Intersection A ∩ B: only elements in both. Example: A = {1, 2, 3}, B = {3, 4}. Then A ∪ B = {1, 2, 3, 4} and A ∩ B = {3}.</p></details>
+    <details><summary>What are difference and complement?</summary><p>A − B: elements of A that are not in B. Complement A′: elements of U that are not in A, so A′ = U − A. Example with U = {1, 2, 3, 4, 5}, A = {1, 2, 3}: A′ = {4, 5}.</p></details>
+    <details><summary>State De Morgan's laws with an example.</summary><p>(A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′. Example: U = {1, 2, 3, 4, 5}, A = {1, 2, 3}, B = {3, 4}. A ∪ B = {1, 2, 3, 4}, so (A ∪ B)′ = {5}. Also A′ = {4, 5} and B′ = {1, 2, 5}, so A′ ∩ B′ = {5}. Both sides are equal. In words: "not (A or B)" is the same as "not A and not B".</p></details>
+    <details><summary>What is a power set?</summary><p>P(A) is the set of all subsets of A, including ∅ and A itself. Example: A = {1, 2} gives P(A) = {∅, {1}, {2}, {1, 2}}. That is 4 subsets, and 2² = 4. If A has n elements, P(A) has 2ⁿ.</p></details>
+    <details><summary>When are two sets disjoint?</summary><p>When they have nothing in common, so A ∩ B = ∅. Example: the set of even numbers and the set of odd numbers. Use the "Disjoint" preset.</p></details>
+    <details><summary>Give a real-life example of sets.</summary><p>In a class, A = students who play cricket and B = students who play football. A ∩ B are students who play both. A ∪ B are students who play at least one of the two games.</p></details>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline">
+      <h2 id="opName">Venn diagram</h2><span class="mu" id="opSym"></span>
+    </div>
+    <svg viewBox="0 0 600 400" role="img" aria-label="Venn diagram of sets A and B inside universal set U" id="venn">
+      <defs>
+        <clipPath id="cA"><circle cx="230" cy="200" r="120"/></clipPath>
+        <mask id="mNotB"><rect width="600" height="400" fill="#fff"/><circle cx="370" cy="200" r="120"/></mask>
+        <mask id="mNotA"><rect width="600" height="400" fill="#fff"/><circle cx="230" cy="200" r="120"/></mask>
+        <mask id="mOut"><rect width="600" height="400" fill="#fff"/><circle cx="230" cy="200" r="120"/><circle cx="370" cy="200" r="120"/></mask>
+      </defs>
+      <rect x="10" y="10" width="580" height="380" rx="10" fill="none" stroke="#a9bdb2" stroke-width="2"/>
+      <rect id="r0" class="reg" x="10" y="10" width="580" height="380" rx="10" mask="url(#mOut)"/>
+      <circle id="r1" class="reg" cx="230" cy="200" r="120" mask="url(#mNotB)"/>
+      <circle id="r2" class="reg" cx="370" cy="200" r="120" mask="url(#mNotA)"/>
+      <circle id="r3" class="reg" cx="370" cy="200" r="120" clip-path="url(#cA)"/>
+      <circle cx="230" cy="200" r="120" fill="none" stroke="#7fc8f8" stroke-width="3"/>
+      <circle cx="370" cy="200" r="120" fill="none" stroke="#f4a6b8" stroke-width="3"/>
+      <text x="22" y="34" fill="#a9bdb2" font-size="16" font-family="Georgia,serif" font-style="italic">U</text>
+      <text x="124" y="104" fill="#7fc8f8" font-size="22" font-weight="700" font-family="Georgia,serif" font-style="italic">A</text>
+      <text x="462" y="104" fill="#f4a6b8" font-size="22" font-weight="700" font-family="Georgia,serif" font-style="italic">B</text>
+      <g id="tok"></g>
+    </svg>
+    <p class="mu" style="margin:8px 0 0">Yellow shading and bright tags show the elements in the answer.</p>
+  </div>
+
+  <div class="card">
+    <h2>Answer</h2>
+    <div class="res" id="resSet">∅</div>
+    <p class="mu" id="resN" style="margin:8px 0 0"></p>
+    <div class="exp" id="exp"></div>
+  </div>
+
+  <div class="card">
+    <h2>Counting check</h2>
+    <p id="card" style="margin:0 0 8px"></p>
+    <div class="chips" id="rel"></div>
+  </div>
+
+  <div class="card">
+    <h2>Laws checked on your sets</h2>
+    <table><thead><tr><th>Law</th><th>Left side</th><th>Right side</th><th></th></tr></thead><tbody id="laws"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>Power set of A</h2>
+    <p id="pw" class="mu" style="margin:0;word-break:break-word"></p>
+  </div>
+
+  <div class="card">
+    <h2>About this project</h2>
+    <table>
+      <tr><th>Project</th><td>Set Theory and Venn Diagram Simulator</td></tr>
+      <tr><th>Subject</th><td>Mathematics, Class 11 (CBSE), NCERT Chapter 1: Sets</td></tr>
+      <tr><th>Created and presented by</th><td><b>Piyush Garai</b>, Class XI</td></tr>
+      <tr><th>Built with</th><td>HTML, CSS and JavaScript</td></tr>
+    </table>
+  </div>
+
+  <div class="row np" style="margin:0"><button onclick="window.print()">Print or save as PDF</button></div>
+</section>
+</main>
+<footer>CBSE Class 11 Mathematics Practical Project. Designed and developed by Piyush Garai.</footer>
+
+<div id="dock" class="np">
+  <div id="demoOn" hidden>
+    <button id="demoBack">◀ Back</button>
+    <button class="on" id="demoNext">Next ▶</button>
+    <span class="mu" id="demoN"></span>
+    <p id="demoTxt"></p>
+    <button id="demoEnd">Exit</button>
+  </div>
+  <div id="dockOps"></div>
+  <div id="dockTools">
+    <button id="demoStart2" class="on">Start guided demo</button>
+    <button id="bigBtn">Big screen: Off</button>
+    <button id="fsBtn">Fullscreen</button>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PRESETS=[
+ ["Overlap","1,2,3,4,5,6,7,8,9,10","1,2,3,4,5,6","4,5,6,7,8"],
+ ["Even / Odd","1,2,3,4,5,6,7,8,9,10","2,4,6,8,10","1,3,5,7,9"],
+ ["Disjoint","1,2,3,4,5,6,7,8","1,2,3","6,7,8"],
+ ["B inside A","1,2,3,4,5,6,7,8","1,2,3,4,5,6","2,4,6"],
+ ["Words","apple,mango,kiwi,plum,pear,fig,lime","apple,mango,kiwi,fig","kiwi,fig,lime"]
+];
+const OPS={
+ union:{s:"A ∪ B",n:"Union",r:[1,2,3],d:"All elements that are in A, or in B, or in both."},
+ inter:{s:"A ∩ B",n:"Intersection",r:[3],d:"Only the elements common to both A and B."},
+ dAB:{s:"A − B",n:"Difference A − B",r:[1],d:"Elements of A that are not in B."},
+ dBA:{s:"B − A",n:"Difference B − A",r:[2],d:"Elements of B that are not in A."},
+ sym:{s:"A Δ B",n:"Symmetric difference",r:[1,2],d:"Elements in exactly one of the two sets: (A − B) ∪ (B − A)."},
+ cA:{s:"A′",n:"Complement of A",r:[0,2],d:"Elements of U that are not in A, so A′ = U − A."},
+ cB:{s:"B′",n:"Complement of B",r:[0,1],d:"Elements of U that are not in B, so B′ = U − B."},
+ dm1:{s:"(A ∪ B)′",n:"De Morgan's first law",r:[0],d:"Elements outside both sets. It equals A′ ∩ B′.",rl:"A′ ∩ B′",rf:(a,b)=>!a&&!b},
+ dm2:{s:"(A ∩ B)′",n:"De Morgan's second law",r:[0,1,2],d:"Everything except the common part. It equals A′ ∪ B′.",rl:"A′ ∪ B′",rf:(a,b)=>!a||!b}
+};
+const LAWS=[
+ ["(A ∪ B)′","A′ ∩ B′",(a,b)=>!(a||b),(a,b)=>!a&&!b],
+ ["(A ∩ B)′","A′ ∪ B′",(a,b)=>!(a&&b),(a,b)=>!a||!b],
+ ["A ∪ A′","U",(a,b)=>a||!a,(a,b)=>true],
+ ["A ∩ A′","∅",(a,b)=>a&&!a,(a,b)=>false],
+ ["A ∪ (A ∩ B)","A",(a,b)=>a||(a&&b),(a,b)=>a],
+ ["A − B","A ∩ B′",(a,b)=>a&&!b,(a,b)=>a&&!b]
+];
+const WORDS={
+ union:"How to find it: write all elements of A, then add the elements of B. Write common ones only once.",
+ inter:"How to find it: check each element of A and keep it only if B also has it.",
+ dAB:"How to find it: take A and cross out everything that is also in B.",
+ dBA:"How to find it: take B and cross out everything that is also in A.",
+ sym:"How to find it: take A ∪ B and remove the common elements.",
+ cA:"How to find it: look at every element of U and keep the ones that A does not have.",
+ cB:"How to find it: look at every element of U and keep the ones that B does not have.",
+ dm1:"How to find it: first join A and B, then take everything of U that is left outside both.",
+ dm2:"How to find it: first find the common part of A and B, then take everything of U except that part."
+};
+let cur="union",S={U:[],A:[],B:[]};
+
+const parse=s=>[...new Set(s.split(/[,;\s]+/).map(x=>x.trim()).filter(Boolean))];
+const sortv=arr=>{const num=arr.every(x=>x!==""&&isFinite(x));return [...arr].sort(num?(p,q)=>p-q:(p,q)=>p.localeCompare(q))};
+const fmt=a=>a.length?"{ "+a.join(", ")+" }":"∅";
+const sub=(X,Y)=>X.every(x=>Y.includes(x));
+
+function read(){
+  const A=sortv(parse($("iA").value)),B=sortv(parse($("iB").value));
+  const u0=parse($("iU").value);
+  const U=sortv([...new Set([...u0,...A,...B])]);
+  const extra=U.filter(x=>!u0.includes(x));
+  $("warn").textContent=extra.length?"Note: "+extra.join(", ")+" "+(extra.length>1?"were":"was")+" not in U, so "+(extra.length>1?"they were":"it was")+" added. A and B must be subsets of U.":"";
+  S={U,A,B};
+}
+const code=x=>(S.A.includes(x)?1:0)+(S.B.includes(x)?2:0);
+
+function layout(items,box,hl){
+  const n=items.length;if(!n)return"";
+  const sizes=[[46,30],[38,26],[32,22]];let sz=sizes[2];
+  for(const z of sizes){if(Math.max(1,Math.floor(box.w/z[0]))*Math.floor(box.h/z[1])>=n){sz=z;break}}
+  const cols=Math.max(1,Math.floor(box.w/sz[0])),cap=cols*Math.max(1,Math.floor(box.h/sz[1]));
+  let shown=items,more=0;
+  if(n>cap){shown=items.slice(0,cap-1);more=n-shown.length}
+  const list=shown.map(t=>({t,h:hl.has(t)}));
+  if(more)list.push({t:"+"+more,h:false,m:1});
+  const rows=Math.ceil(list.length/cols);let out="";
+  list.forEach((it,i)=>{
+    const r=Math.floor(i/cols),c=i%cols,rc=Math.min(cols,list.length-r*cols);
+    const x=box.x+(c-(rc-1)/2)*sz[0],y=box.y+(r-(rows-1)/2)*sz[1];
+    out+=tag(it,x,y,sz);
+  });
+  return out;
+}
+function tag(it,x,y,sz){
+  const mc=Math.floor((sz[0]-8)/7.4);
+  const txt=it.t.length>mc?it.t.slice(0,Math.max(1,mc-1))+"…":it.t;
+  const w=sz[0]-5,h=sz[1]-5;
+  return `<g><title>${esc(it.t)}</title><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="7" fill="${it.h?"#f5d76e":"#12261f"}" stroke="${it.h?"#f5d76e":"#4b6b5e"}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="700" font-family="ui-monospace,Consolas,monospace" fill="${it.h?"#1b2a22":"#f2efe4"}">${esc(txt)}</text></g>`;
+}
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function outsideSlots(n){
+  const s=[];
+  for(let x=30;x<=570;x+=42)s.push([x,370]);
+  for(let x=150;x<=570;x+=42)s.push([x,32]);
+  for(let x=30;x<=570;x+=42)s.push([x,344]);
+  for(let x=30;x<=570;x+=42)s.push([x,58]);
+  return s;
+}
+
+function draw(){
+  const o=OPS[cur];
+  const res=S.U.filter(x=>o.r.includes(code(x)));
+  const hl=new Set(res);
+  [0,1,2,3].forEach(i=>$("r"+i).classList.toggle("on",o.r.includes(i)));
+  const by=[0,1,2,3].map(i=>S.U.filter(x=>code(x)===i));
+  let svg=layout(by[1],{x:190,y:200,w:110,h:130},hl)+layout(by[3],{x:300,y:200,w:70,h:110},hl)+layout(by[2],{x:410,y:200,w:110,h:130},hl);
+  const slots=outsideSlots(),cap=slots.length;let out=by[0],more=0;
+  if(out.length>cap){more=out.length-(cap-1);out=out.slice(0,cap-1)}
+  const sz=[40,26];
+  out.forEach((t,i)=>{svg+=tag({t,h:hl.has(t)},slots[i][0],slots[i][1],sz)});
+  if(more)svg+=tag({t:"+"+more,h:false},slots[out.length][0],slots[out.length][1],sz);
+  $("tok").innerHTML=svg;
+
+  $("opName").textContent=o.n;$("opSym").textContent=o.s;
+  $("resSet").textContent=o.s+" = "+fmt(res);
+  $("resN").textContent="Number of elements: n("+o.s+") = "+res.length;
+  let ex=o.d+" "+WORDS[cur]+" Here A = "+fmt(S.A)+" and B = "+fmt(S.B)+", so "+o.s+" = "+fmt(res)+".";
+  if(o.rf){
+    const rhs=S.U.filter(x=>o.rf(S.A.includes(x),S.B.includes(x)));
+    const same=rhs.length===res.length&&rhs.every(x=>res.includes(x));
+    ex+=` Right side: ${o.rl} = ${fmt(rhs)}. `+(same?"Both sides are equal, so the law is verified for these sets.":"The sides differ.");
+  }
+  $("exp").textContent=ex;
+
+  const A=S.A,B=S.B,I=A.filter(x=>B.includes(x)),Un=[...new Set([...A,...B])];
+  $("card").innerHTML=`n(A) = ${A.length}, n(B) = ${B.length}, n(A ∩ B) = ${I.length}, n(U) = ${S.U.length}<br>n(A ∪ B) = n(A) + n(B) − n(A ∩ B) = ${A.length} + ${B.length} − ${I.length} = <b class="ok">${A.length+B.length-I.length}</b> ${Un.length===A.length+B.length-I.length?"✓":"✗"}`;
+  const rel=[["A ⊆ B",sub(A,B)],["B ⊆ A",sub(B,A)],["A = B",sub(A,B)&&sub(B,A)],["Disjoint (A ∩ B = ∅)",I.length===0]];
+  $("rel").innerHTML=rel.map(r=>`<span class="chip ${r[1]?"t":""}">${r[0]}: ${r[1]?"Yes":"No"}</span>`).join("");
+
+  $("laws").innerHTML=LAWS.map(l=>{
+    const L=S.U.filter(x=>l[2](S.A.includes(x),S.B.includes(x))),R=S.U.filter(x=>l[3](S.A.includes(x),S.B.includes(x)));
+    const eq=L.length===R.length&&L.every(x=>R.includes(x));
+    return `<tr><td>${l[0]} = ${l[1]}</td><td class="m">${esc(fmt(L))}</td><td class="m">${esc(fmt(R))}</td><td class="${eq?"ok":"no"}">${eq?"✓":"✗"}</td></tr>`;
+  }).join("");
+
+  const n=A.length;
+  if(n<=4){
+    const subs=[];for(let m=0;m<1<<n;m++)subs.push(A.filter((_,i)=>m>>i&1));
+    subs.sort((p,q)=>p.length-q.length);
+    $("pw").textContent="P(A) = { "+subs.map(s=>s.length?"{"+s.join(", ")+"}":"∅").join(", ")+" }  (n = "+n+", so "+(1<<n)+" subsets)";
+  }else $("pw").textContent="A has "+n+" elements, so P(A) has 2^"+n+" = "+Math.pow(2,n)+" subsets (too many to list; use 4 or fewer elements to see them).";
+}
+
+function refresh(){read();draw()}
+function setOp(k){
+  cur=k;
+  document.querySelectorAll("#ops button,#dockOps button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));
+  draw();
+}
+function load(p){$("iU").value=p[1].split(",").join(", ");$("iA").value=p[2].split(",").join(", ");$("iB").value=p[3].split(",").join(", ");refresh()}
+function rand(){
+  const U=Array.from({length:12},(_,i)=>i+1),pick=()=>U.filter(()=>Math.random()<.5);
+  let a=pick(),b=pick();if(!a.length)a=[1];if(!b.length)b=[2];
+  $("iU").value=U.join(", ");$("iA").value=a.join(", ");$("iB").value=b.join(", ");refresh();
+}
+
+$("ops").innerHTML=Object.keys(OPS).map(k=>`<button data-k="${k}"><b>${OPS[k].s}</b><span>${OPS[k].n}</span></button>`).join("");
+$("ops").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setOp(b.dataset.k)});
+$("presets").innerHTML=PRESETS.map((p,i)=>`<button data-i="${i}">${p[0]}</button>`).join("")+`<button data-r="1">Random</button>`;
+$("presets").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;b.dataset.r?rand():load(PRESETS[b.dataset.i])});
+["iU","iA","iB"].forEach(id=>$(id).addEventListener("input",refresh));
+
+const DEMO=[
+ [0,"union","Here U is 1 to 10, A is 1 to 6 and B is 4 to 8. The union A ∪ B has every element that is in A or B or both. The yellow part covers both circles."],
+ [0,"inter","Intersection A ∩ B is only the common elements. Point at the middle: 4, 5 and 6."],
+ [0,"dAB","Difference A − B means elements of A that are not in B. Only the left part is yellow."],
+ [0,"cA","Complement A′ means everything in U that is not in A. Notice the area outside both circles is included."],
+ [0,"dm1","De Morgan's law: (A ∪ B)′ equals A′ ∩ B′. Scroll down to the laws table and show the tick mark."],
+ [2,"inter","Now the Disjoint example. A and B share nothing, so A ∩ B = ∅. The chip below says Disjoint: Yes."],
+ [3,"inter","B inside A. B is a subset of A, so A ∩ B = B. Show the chip B ⊆ A: Yes."],
+ [0,"union","Now ask a classmate for their own numbers. Type them into A and B and watch the diagram change live."]
+];
+let di=-1;
+function demo(i){
+  if(i<0||i>=DEMO.length){demoStop();return}
+  di=i;const d=DEMO[i];
+  $("demoOff").hidden=true;$("demoOn").hidden=false;
+  load(PRESETS[d[0]]);setOp(d[1]);
+  $("demoN").textContent="Step "+(i+1)+" of "+DEMO.length;
+  $("demoTxt").textContent=d[2];
+  $("demoNext").textContent=i===DEMO.length-1?"Finish":"Next";
+}
+function demoStop(){di=-1;$("demoOff").hidden=false;$("demoOn").hidden=true}
+$("demoStart").onclick=()=>demo(0);
+$("demoNext").onclick=()=>demo(di+1);
+$("demoBack").onclick=()=>demo(Math.max(0,di-1));
+$("demoEnd").onclick=demoStop;
+document.addEventListener("keydown",e=>{
+  if(di<0||/INPUT/.test(document.activeElement.tagName))return;
+  if(e.key==="ArrowRight")demo(di+1);else if(e.key==="ArrowLeft")demo(Math.max(0,di-1));
+});
+
+$("dockOps").innerHTML=Object.keys(OPS).map(k=>`<button data-k="${k}">${OPS[k].s}</button>`).join("");
+$("dockOps").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setOp(b.dataset.k)});
+$("demoStart2").onclick=()=>demo(0);
+$("bigBtn").onclick=()=>{const on=document.body.classList.toggle("big");$("bigBtn").textContent="Big screen: "+(on?"On":"Off")};
+$("fsBtn").onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()};
+
+load(PRESETS[0]);setOp("union");
+</script>
+</body>
+</html>
